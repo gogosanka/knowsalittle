@@ -1,0 +1,59 @@
+/*In this tutorial we will walk through creating a single page application,
+more specifically explaining how to develop the front end (html, css, and javascript) in order to
+display and access our content in real time without having to send new page requests (a refresh) for each page.
+
+This tutorial example is adopted from the Knockout Tutorial and is intended to compliment it by providing more in depth
+explanations for certain concepts for beginners, including data-bindings, html, and css. Expect future tutorials to
+provide styling and project examples of other Javascript libraries, and how they work with Knockout. */
+
+// Creating the View Model (the model that will be the logic behind the view's functionality
+/* We will have to create a function for Knockout to handle:
+    holding data
+    how that data behaves,
+    and any runtime scripts
+
+// the 'holding data' steps
+First, as good practice, point the namespace to the function by instantiating a var self with the value this.
+Next, create the navigation list. (create a list object of folders)
+Then, make sure that each item in the navigation has an ID (for hash-based navigation)
+    (just create an observable object for IDs)
+For organizational purpose, let's make a view now. Just display the navigation list by:
+    creating an unordered list that is binding to our folders using the foreach binding,
+    and with each list item, have it display the $data using a text binding.
+    I'm going to call each of these items that will show, 'bait,' but more on that later
+        Hint: $data is how you display the information of a foreach binding,
+            kind of like in Python's "for i in list: print i" statement
+            the 'print i' portion of that statement is like 'text: $data'
+            oops, I gave you the answer!
+Let's go back to the View Model
+Afterwards, create another observable object that will be used for loading data for each of the IDs.
+
+// the 'how data behaves steps'
+First we'll make a function that will actually navigate to each ID object.
+    Just create a function that will change the observable data object to the folder we choose
+        Make sure the folder we choose is just a parameter...the view will handle the selection
+            The view is handling the selection by us creating a clickable binding on the UI
+            Once the UI is clicked, the view is meant to run the function we created above,
+                setting the current observable to the value of what the object we clicked is
+                the 'bait.'
+                
+// the runtime script
+*/
+
+function WebmailViewModel() {
+    // Data
+    var self = this;
+    self.folders = ['Inbox', 'Archive', 'Sent', 'Spam', 'Other'];
+    self.chosenFolderId = ko.observable();
+    self.chosenFolderData = ko.observable();
+    
+    // Behaviours (aka functions)
+    self.goToFolder = function(folder) { self.chosenFolderId(folder);
+    $.get('/mail', { folder: folder }, self.chosenFolderData);
+    };
+    
+    // Default to Inbox
+    self.goToFolder('Inbox');    
+};
+
+ko.applyBindings(new WebmailViewModel());
